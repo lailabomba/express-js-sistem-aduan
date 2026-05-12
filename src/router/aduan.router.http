@@ -1,6 +1,8 @@
 GET http://localhost:3000/aduan/
 
 
+###
+
 POST http://localhost:3000/aduan/create
 Content-Type: application/json
 
@@ -9,4 +11,27 @@ Content-Type: application/json
     "catatan": "Saya ingin melaporkan masalah dengan layanan anda.",
     "kategori_aduan": "Layanan Pelanggan",
     "email": "john.doe@example.com"
+}
+###
+PATCH http://localhost:3000/aduan/update/1
+Content-Type: application/json
+
+{
+    "catatan": "Saya ingin memperbarui catatan saya tentang masalah ini."
+}
+
+###
+PATCH http://localhost:3000/aduan/update/invalid_id
+Content-Type: application/json
+
+{
+    "catatan": "Invalid ID."
+}
+
+###
+DELETE  http://localhost:3000/aduan/DELETE url HTTP/1.1e/invalid_id
+Content-Type: application/json
+
+{
+    "catatan": "Invalid ID."
 }

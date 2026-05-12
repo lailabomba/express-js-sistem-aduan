@@ -1,8 +1,21 @@
 import express from 'express';
 import aduanRouter from './router/aduan.router'; // Import router aduan 
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import logger from './utils/logger';
+
+dotenv.config();
+
 const app = express()
 
 const port = 3000
+
+app.use(
+  morgan('dev', {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
+
 
 app.use(express.json());
 
@@ -19,4 +32,5 @@ app.get('/first-endpoint', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
- 
+
+
