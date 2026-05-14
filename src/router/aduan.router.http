@@ -7,8 +7,8 @@ POST http://localhost:3000/aduan/create
 Content-Type: application/json
 
 {
-    "nama_pengadu": "Jane Doe",
-    "catatan": "Saya ingin melaporkan masalah dengan layanan anda.",
+    "nama_pengadu": "laila",
+    "catatan": "Saya tidak berpuashati dengan layanan anda.",
     "kategori_aduan": "Layanan Pelanggan",
     "email": "john.doe@example.com"
 }

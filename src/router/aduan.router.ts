@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import db from '../databases/db';
 
 // Contoh data aduan
 const aduan = [
@@ -23,15 +24,16 @@ aduans.set('2', {
 });
 
 // Endpoint untuk melihat semua aduan
-router.get('/', (req, res) => {
+router.get('/', async(req, res) => {
+  const aduanList = await db('aduan').select('*'); // Fetch all aduan from the database 
     res.status(200).json({
       success: true,
-      data: Array.from(aduans.values()),
+      data: aduanList,
     });
   });
 
 
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
     // body params
     /**
      * 1. Nama Pengadu
@@ -54,7 +56,19 @@ console.log('Request body:', req.body); // Log the request body to see what is b
 
     const id = String(Date.now()); // - create a unique id, we are using date, but we will change to uuid
     const aduan = { nama_pengadu, catatan, kategori_aduan, email };
-    aduans.set(id, aduan); // -- add new record
+
+   // save to database, refer to db
+  // do DTO in here before store to database.
+  const saved = await db('aduan').insert({
+    id: id,
+    nama_pengadu: nama_pengadu,
+    catatan: catatan,
+    kategori_aduan,
+    emel: email,
+  });
+  if (!saved) {
+    return res.status(500).json({ message: 'Failed to save aduan.' });
+  }
 
     return res
         .status(201)
@@ -105,4 +119,28 @@ router.get('/view/:id', (req, res) => {
     return res.json({ message: 'Aduan updated.', data: updated });
   });
 
+
+  router.delete('/delete/:id', async (req, res) => {
+    const id = getRouteId(req);
+  
+    if (!id) {
+      return res.status(400).json({ message: 'Invalid id parameter.' });
+    }
+  
+    const exists = await db('aduan').where({ id }).first();
+  
+    if (!exists) {
+      return res.status(404).json({ message: 'Aduan not found.' });
+    }
+  
+    await db('aduan').where({ id }).del();
+    return res.json({ message: 'Aduan deleted.' });
+  });
+
 export default router;
+
+import type { Request } from 'express';
+
+function getRouteId(req: Request<{ id: string }>) {
+  return req.params.id;
+}
